@@ -28,12 +28,12 @@ class Event:
     start_at: time
     end_at: time
 
-    reminders: list[Reminder] = field(default_factory = list)
+    reminders: list[Reminder] = field(init = False, default_factory = list)
 
-    id: str = field(default_factory = generate_unique_id)
+    id: str = field(default_factory=generate_unique_id)
 
     def add_reminder(self, date_time: datetime, type: str = Reminder.EMAIL):
-        reminder = Reminder(date_time = date_time, type=type)
+        reminder = Reminder(date_time=date_time, type=type)
         self.reminders.append(reminder)
 
     def delete_reminder(self, reminder_index: int):
@@ -42,14 +42,11 @@ class Event:
         else:
             reminder_not_found_error()
 
-    def __str__(self )-> str:
-        ID: {id}
-        Event_title: {Event.title}
-        Description: {Event.description}
-        Time: {Event.start_at} - {Event.end_at}
+    def __str__(self):
+        f"ID: {id} - Event_title: {self.title} - Description: {Event.description} - Time: {Event.start_at} - {Event.end_at})"
+
 
 class Day:
-
     date_: date
     slots: dict[time, str | None] = []
 
