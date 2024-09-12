@@ -10,40 +10,52 @@ from app.services.util import generate_unique_id, date_lower_than_today_error, e
 
 class Reminder:
 
-    EMAIL =  "email"
-    SYSTEM = "system"
-
-    date_time  = datetime
+    date_time: datetime
+    EMAIL: str = "email"
+    SYSTEM: str = "system"
     type: str = EMAIL
 
     def __str__(self):
-        return f"Reminder on {self.date_time} of type {type}"
+        return f"Reminder on {self.date_time} of type {self.type}"
 
 @dataclass
 
 class Event:
 
-    title = str
-    description = str
-    date_ = date
-    start_at = time
-    end_at = time
+    title: str
+    description:  str
+    date_: date
+    start_at: time
+    end_at: time
 
     reminders: list[Reminder] = field(default_factory = list)
 
     id: str = field(default_factory = generate_unique_id)
 
-    def add_reminder(self):
-        pass
+    def add_reminder(self, date_time: datetime, type: str = Reminder.EMAIL):
+        reminder = Reminder(date_time = date_time, type=type)
+        self.reminders.append(reminder)
 
-    def delete_reminder(self, reminder_index : int):
-        pass
+    def delete_reminder(self, reminder_index: int):
+        if 0 <= reminder_index < len(self.reminders):
+            del self.reminders[reminder_index]
+        else:
+            reminder_not_found_error()
 
-    def __str__(self)-> str:
+    def __str__(self )-> str:
         ID: {id}
-        Event_title: {self.title}
-        Description: {self.description}
-        Time: {self.start_at} - {self.end_at}
+        Event_title: {Event.title}
+        Description: {Event.description}
+        Time: {Event.start_at} - {Event.end_at}
+
+class Day:
+
+    date_: date
+    slots: dict[time, str | None] = []
+
+
+
+
 
 
 
