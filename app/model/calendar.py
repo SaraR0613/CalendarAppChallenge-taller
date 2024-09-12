@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, date, time
 from typing import ClassVar
 
+import app.services.util
 from app.services.util import generate_unique_id, date_lower_than_today_error, event_not_found_error, \
     reminder_not_found_error, slot_not_available_error
 
@@ -30,25 +31,57 @@ class Event:
 
     reminders: list[Reminder] = field(init = False, default_factory = list)
 
-    id: str = field(default_factory=generate_unique_id)
+    id: str = app.services.util.generate_unique_id()
 
     def add_reminder(self, date_time: datetime, type: str = Reminder.EMAIL):
         reminder = Reminder(date_time=date_time, type=type)
         self.reminders.append(reminder)
 
     def delete_reminder(self, reminder_index: int):
-        if 0 <= reminder_index < len(self.reminders):
-            del self.reminders[reminder_index]
+        if self.reminders[reminder_index] in self.reminders:
+            return self.reminders.pop(reminder_index)
         else:
             reminder_not_found_error()
 
     def __str__(self):
-        f"ID: {id} - Event_title: {self.title} - Description: {Event.description} - Time: {Event.start_at} - {Event.end_at})"
+        f"ID: {self.id} - Event_title: {self.title}\n Description: {Event.description}\n Time: {Event.start_at}\n {Event.end_at})"
 
 
 class Day:
     date_: date
-    slots: dict[time, str | None] = []
+    slots: dict[time, str | None] = {}
+
+    def _init_slots(self):
+        pass
+
+    def add_event(self, event_id: str, start_at: time, end_at: time):
+        pass
+
+
+    def delete_event(self, event_id: str):
+        deleted = False
+        for slot, saved_id in self.slots.items():
+            if saved_id == event_id:
+                self.slots[slot] = None
+                deleted = True
+        if not deleted:
+            event_not_found_error()
+
+    def update_event(self, event_id: str, start_at: time, end_at: time):
+        for slot in self.slots:
+            if self.slots[slot] == event_id:
+                self.slots[slot] = None
+
+        for slot in self.slots:
+            if start_at <= slot < end_at:
+                if self.slots[slot]:
+                    slot_not_available_error()
+                else:
+                    self.slots[slot] = event_id
+
+
+
+
 
 
 
