@@ -195,22 +195,3 @@ class Calendar:
             event_not_found_error()
 
         return event.reminders
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
